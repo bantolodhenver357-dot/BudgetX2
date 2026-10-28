@@ -191,27 +191,32 @@ startButton?.addEventListener("click", () => {
 backButton?.addEventListener("click", () => showScreen(welcomeScreen));
 
 
-nameForm?.addEventListener("submit", async event => {
+
+nameForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const name = userNameInput.value.trim();
+  const name = userNameInput?.value.trim();
 
   if (!name) {
     nameError?.classList.remove("hidden");
-    userNameInput.focus();
+    userNameInput?.focus();
     return;
   }
 
   localStorage.setItem(STORAGE.name, name);
   nameError?.classList.add("hidden");
 
-  // Show the animated BudgetX logo for 3 seconds.
+  // Prevent multiple submissions.
+  const submitButton = nameForm.querySelector('[type="submit"]');
+  if (submitButton) submitButton.disabled = true;
+
   const splash = document.createElement("div");
   splash.className = "bx-logo-splash";
   splash.innerHTML = `
     <img
       src="./assets/budgetx-logo.png"
       alt="BudgetX logo"
+      onerror="this.style.display='none'"
     >
     <h2>BudgetX</h2>
     <p>Building better money habits.</p>
@@ -219,29 +224,33 @@ nameForm?.addEventListener("submit", async event => {
 
   document.body.appendChild(splash);
 
-  // Allow the logo animation to finish before opening the dashboard.
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  try {
+    // Keep the logo splash visible for 3 seconds.
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
-  openDashboard();
+    // Remove the splash even if dashboard rendering encounters an error.
+    splash.remove();
 
-  // Animate the dashboard in slowly.
-  dashboardScreen?.classList.remove(
-    "bx-screen-enter-right",
-    "bx-screen-enter-right-slow"
-  );
+    openDashboard();
 
-  if (dashboardScreen) {
-    void dashboardScreen.offsetWidth;
-    dashboardScreen.classList.add("bx-screen-enter-right-slow");
+    dashboardScreen?.classList.remove(
+      "bx-screen-enter-right",
+      "bx-screen-enter-right-slow"
+    );
+
+    if (dashboardScreen) {
+      void dashboardScreen.offsetWidth;
+      dashboardScreen.classList.add("bx-screen-enter-right-slow");
+    }
+  } catch (error) {
+    console.error("BudgetX screen transition failed:", error);
+    splash.remove();
+    showScreen(dashboardScreen, "slow");
+  } finally {
+    if (submitButton) submitButton.disabled = false;
   }
-
-  splash.style.transition = "opacity 350ms ease";
-  splash.style.opacity = "0";
-
-  await new Promise(resolve => setTimeout(resolve, 350));
-
-  splash.remove();
 });
+
 
 
 /* ==========================================
