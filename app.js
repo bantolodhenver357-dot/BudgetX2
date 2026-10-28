@@ -190,7 +190,8 @@ startButton?.addEventListener("click", () => {
 
 backButton?.addEventListener("click", () => showScreen(welcomeScreen));
 
-nameForm?.addEventListener("submit", event => {
+
+nameForm?.addEventListener("submit", async event => {
   event.preventDefault();
 
   const name = userNameInput.value.trim();
@@ -203,8 +204,45 @@ nameForm?.addEventListener("submit", event => {
 
   localStorage.setItem(STORAGE.name, name);
   nameError?.classList.add("hidden");
+
+  // Show the animated BudgetX logo for 3 seconds.
+  const splash = document.createElement("div");
+  splash.className = "bx-logo-splash";
+  splash.innerHTML = `
+    <img
+      src="./assets/budgetx-logo.png"
+      alt="BudgetX logo"
+    >
+    <h2>BudgetX</h2>
+    <p>Building better money habits.</p>
+  `;
+
+  document.body.appendChild(splash);
+
+  // Allow the logo animation to finish before opening the dashboard.
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
   openDashboard();
+
+  // Animate the dashboard in slowly.
+  dashboardScreen?.classList.remove(
+    "bx-screen-enter-right",
+    "bx-screen-enter-right-slow"
+  );
+
+  if (dashboardScreen) {
+    void dashboardScreen.offsetWidth;
+    dashboardScreen.classList.add("bx-screen-enter-right-slow");
+  }
+
+  splash.style.transition = "opacity 350ms ease";
+  splash.style.opacity = "0";
+
+  await new Promise(resolve => setTimeout(resolve, 350));
+
+  splash.remove();
 });
+
 
 /* ==========================================
    BALANCE CARD
