@@ -172,15 +172,21 @@ function openDashboard() {
   updateNotificationCard();
 }
 
-startButton?.addEventListener("click", () => {
-  showScreen(nameScreen);
 
+startButton?.addEventListener("click", () => {
   if (nameError) nameError.classList.add("hidden");
+
   if (userNameInput) {
     userNameInput.value = localStorage.getItem(STORAGE.name) || "";
-    setTimeout(() => userNameInput.focus(), 100);
+  }
+
+  showScreen(nameScreen, "right");
+
+  if (userNameInput) {
+    setTimeout(() => userNameInput.focus(), 350);
   }
 });
+
 
 backButton?.addEventListener("click", () => showScreen(welcomeScreen));
 
