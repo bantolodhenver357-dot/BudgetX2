@@ -1462,3 +1462,69 @@ button:disabled {
     animation-delay: 0ms !important;
   }
 }
+
+/* ===== BudgetX Install App Button ===== */
+
+#installAppButton {
+  width: 100%;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 16px 0;
+  padding: 14px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #5268ff, #7957e8);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(82, 104, 255, 0.25);
+  transition: transform 180ms ease, box-shadow 180ms ease,
+    opacity 180ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#installAppButton[hidden] {
+  display: none !important;
+}
+
+#installAppButton:not([hidden]) {
+  animation: installButtonAppear 500ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+#installAppButton .material-symbols-rounded {
+  font-size: 24px;
+  font-variation-settings: "FILL" 1;
+}
+
+#installAppButton:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 12px rgba(82, 104, 255, 0.2);
+}
+
+#installAppButton:focus-visible {
+  outline: 3px solid #aab5ff;
+  outline-offset: 3px;
+}
+
+@keyframes installButtonAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #installAppButton:not([hidden]) {
+    animation: none;
+  }
+}
