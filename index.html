@@ -21,6 +21,36 @@
 </head>
 <body>
 
+<div id="installModal" class="install-modal" hidden>
+  <div class="install-backdrop" data-close-install></div>
+
+  <section class="install-card" role="dialog"
+    aria-modal="true" aria-labelledby="installTitle">
+
+    <button class="install-close" type="button"
+      data-close-install aria-label="Close">×</button>
+
+    <img src="./assets/icon-192.png" alt="BudgetX icon">
+
+    <h2 id="installTitle">Install BudgetX</h2>
+    <p id="installDescription">
+      Your money, your goals, all in one place.
+    </p>
+
+    <div id="installStatus" class="install-status" hidden>
+      <span class="install-spinner"></span>
+      <span id="installStatusText">Preparing installation…</span>
+    </div>
+
+    <button id="confirmInstallButton" class="primary-button" type="button">
+      <span class="material-symbols-rounded">download</span>
+      Install App
+    </button>
+
+    <p class="install-note">Free · Secure · Easy to use</p>
+  </section>
+</div>
+
  
 <!-- Welcome -->
 <main class="screen" id="welcomeScreen">
