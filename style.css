@@ -1528,3 +1528,123 @@ button:disabled {
     animation: none;
   }
 }
+
+/* BudgetX installation modal */
+.install-modal[hidden] {
+  display: none !important;
+}
+
+.install-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+}
+
+.install-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .72);
+  backdrop-filter: blur(7px);
+  animation: installFade .25s ease both;
+}
+
+.install-card {
+  position: relative;
+  width: min(100%, 360px);
+  padding: 32px 24px 24px;
+  border: 1px solid var(--border, #28334a);
+  border-radius: 28px;
+  background: var(--surface, #111a2c);
+  color: var(--text, #fff);
+  text-align: center;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .4);
+  animation: installPop .4s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.install-card > img {
+  width: 86px;
+  height: 86px;
+  object-fit: contain;
+  border-radius: 22px;
+  margin-bottom: 16px;
+}
+
+.install-card h2 {
+  margin: 0 0 10px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.install-card > p {
+  color: var(--text-muted, #a0aabd);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.install-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, .12);
+  color: inherit;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+#confirmInstallButton {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+}
+
+.install-note {
+  margin: 16px 0 0;
+  font-size: 11px !important;
+}
+
+.install-status {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-muted, #a0aabd);
+}
+
+.install-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(128, 128, 128, .25);
+  border-top-color: var(--accent, #6c7cff);
+  border-radius: 50%;
+  animation: installSpin .7s linear infinite;
+}
+
+.install-card.is-installing #confirmInstallButton {
+  opacity: .6;
+}
+
+@keyframes installSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes installFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes installPop {
+  from { opacity: 0; transform: translateY(25px) scale(.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
