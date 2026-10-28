@@ -862,3 +862,39 @@ if ("serviceWorker" in navigator && location.protocol !== "file:") {
       .catch(error => console.error("Service worker registration failed:", error));
   });
 }
+
+let deferredInstallPrompt = null;
+
+const installAppButton = document.getElementById("installAppButton");
+
+window.addEventListener("beforeinstallprompt", event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+
+  if (installAppButton) {
+    installAppButton.hidden = false;
+  }
+});
+
+installAppButton?.addEventListener("click", async () => {
+  if (!deferredInstallPrompt) {
+    alert(
+      "To install BudgetX, open your browser menu and choose Install app or Add to Home screen."
+    );
+    return;
+  }
+
+  deferredInstallPrompt.prompt();
+
+  await deferredInstallPrompt.userChoice;
+
+  deferredInstallPrompt = null;
+  installAppButton.hidden = true;
+});
+
+window.addEventListener("appinstalled", () => {
+  if (installAppButton) {
+    installAppButton.hidden = true;
+  }
+  deferredInstallPrompt = null;
+});
