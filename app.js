@@ -140,19 +140,26 @@ function getTotals() {
    SCREENS & GREETING
 ========================================== */
 
-function showScreen(screen) {
+
+function showScreen(screen, animation = "right") {
   [welcomeScreen, nameScreen, dashboardScreen].forEach(item => {
-    item?.classList.add("hidden");
+    if (!item) return;
+    item.classList.add("hidden");
+    item.classList.remove(
+      "bx-screen-enter-right",
+      "bx-screen-enter-right-slow",
+      "bx-screen-exit-left"
+    );
   });
 
-  screen?.classList.remove("hidden");
-}
+  if (!screen) return;
 
-function updateGreeting() {
-  const name = localStorage.getItem(STORAGE.name) || "there";
+  screen.classList.remove("hidden");
 
-  if (mainGreeting) {
-    mainGreeting.textContent = `${getGreeting()}, ${name}.`;
+  if (animation === "right") {
+    screen.classList.add("bx-screen-enter-right");
+  } else if (animation === "slow") {
+    screen.classList.add("bx-screen-enter-right-slow");
   }
 }
 
