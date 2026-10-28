@@ -907,7 +907,7 @@ window.addEventListener("appinstalled", () => {
   deferredInstallPrompt = null;
 
   if (installAppButton) {
-    installAppButton.hidden = true;
+    installAppButton.hidden = false;
   }
 });
 
