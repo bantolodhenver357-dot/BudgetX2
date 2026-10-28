@@ -864,51 +864,49 @@ if ("serviceWorker" in navigator && location.protocol !== "file:") {
 }
 
 
+
 let deferredInstallPrompt = null;
 
 const installAppButton = document.getElementById("installAppButton");
 
-// Capture Chrome's native installation prompt.
+// Always show the button on the welcome screen.
+if (installAppButton) {
+  installAppButton.hidden = false;
+}
+
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
   deferredInstallPrompt = event;
 
   if (installAppButton) {
     installAppButton.hidden = false;
-    installAppButton.innerHTML = `
-      <span class="material-symbols-rounded">download</span>
-      Install BudgetX
-    `;
   }
 });
 
-// Show the actual installation prompt when clicked.
 installAppButton?.addEventListener("click", async () => {
-  if (!deferredInstallPrompt) {
-    alert(
-      "The installation prompt is not available yet. " +
-      "Check that BudgetX is installable in Chrome and reload the website."
-    );
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+
+    const result = await deferredInstallPrompt.userChoice;
+
+    if (result.outcome === "accepted") {
+      installAppButton.textContent = "Installing BudgetX...";
+    }
+
+    deferredInstallPrompt = null;
     return;
   }
 
-  deferredInstallPrompt.prompt();
-
-  const result = await deferredInstallPrompt.userChoice;
-
-  if (result.outcome === "accepted") {
-    installAppButton.hidden = true;
-  }
-
-  deferredInstallPrompt = null;
+  // If the native prompt is unavailable, don't hide the button.
+  alert(
+    "To install BudgetX, open Chrome's menu (⋮) and select " +
+    "'Install app' or 'Add to Home screen'."
+  );
 });
 
 window.addEventListener("appinstalled", () => {
   deferredInstallPrompt = null;
-
-  if (installAppButton) {
-    installAppButton.hidden = false;
-  }
+  // Keep the button visible if you want users to see it on the welcome screen.
 });
 
 
