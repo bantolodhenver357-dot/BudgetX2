@@ -868,51 +868,47 @@ let deferredInstallPrompt = null;
 
 const installAppButton = document.getElementById("installAppButton");
 
-if (installAppButton) {
-  // Show the button by default, including on iPhones.
-  installAppButton.hidden = false;
+// Capture Chrome's native installation prompt.
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
 
-  window.addEventListener("beforeinstallprompt", event => {
-    event.preventDefault();
-    deferredInstallPrompt = event;
+  if (installAppButton) {
     installAppButton.hidden = false;
-  });
+    installAppButton.innerHTML = `
+      <span class="material-symbols-rounded">download</span>
+      Install BudgetX
+    `;
+  }
+});
 
-  installAppButton.addEventListener("click", async () => {
-    if (deferredInstallPrompt) {
-      deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice;
-      deferredInstallPrompt = null;
-      installAppButton.hidden = true;
-      return;
-    }
+// Show the actual installation prompt when clicked.
+installAppButton?.addEventListener("click", async () => {
+  if (!deferredInstallPrompt) {
+    alert(
+      "The installation prompt is not available yet. " +
+      "Check that BudgetX is installable in Chrome and reload the website."
+    );
+    return;
+  }
 
-    // Fallback for browsers without an install prompt.
-    const isIOS =
-      /iphone|ipad|ipod/i.test(navigator.userAgent) ||
-      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  deferredInstallPrompt.prompt();
 
-    if (isIOS) {
-      alert(
-        "To install BudgetX on your iPhone:\n\n" +
-        "1. Open this website in Safari.\n" +
-        "2. Tap the Share button.\n" +
-        "3. Choose Add to Home Screen.\n" +
-        "4. Tap Add."
-      );
-    } else {
-      alert(
-        "To install BudgetX:\n\n" +
-        "1. Open this website in Chrome.\n" +
-        "2. Tap the three-dot menu (⋮).\n" +
-        "3. Choose Install app or Add to Home screen."
-      );
-    }
-  });
+  const result = await deferredInstallPrompt.userChoice;
 
-  window.addEventListener("appinstalled", () => {
+  if (result.outcome === "accepted") {
     installAppButton.hidden = true;
-    deferredInstallPrompt = null;
-  });
-}
+  }
+
+  deferredInstallPrompt = null;
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+
+  if (installAppButton) {
+    installAppButton.hidden = true;
+  }
+});
+
 
